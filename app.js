@@ -180,5 +180,61 @@ function getJobListingHTML(jobData, filterTags = []) {
         </div>
     `;
 
+    const tagsList = [
+        jobData.role,
+        jobData.level,
+        ...(jobData.languages || []),
+        ...(jobData.tools || [])
+    ];
+    const tagsListLowercase = tagsList.map(t => t && t.toLowerCase());
+    const passesFilter = !filterTags.length || filterTags.every(tag => (
+        tagsListLowercase.includes(tag && tag.toLowerCase())
+    ));
+    
+    if (!passesFilter) {
+        return '';
+    }
+
+    const tagsString = tagsList.reduce((acc, currentTag) => {
+        const activeClass = (filterTags.includes(currentTag) && TAG_ACTIVE_CLASS) || '';
+
+        return acc + getTagHTML(currentTag, `${TAG_CLASS} ${activeClass}`);
+    }, '');
+
+    return jobListingHTML.replace(JOB_TAGS_PLACEHOLDER, tagsString);
+};
+
+function toggleClass(el, className) {
+    if (el.classList.contains(className)) {
+        el.classList.remove(className);
+
+        return;
+    }
+    
+    el.classList.add(className);
+}
+
+function getSearchBarTags(tagValue, searchContentEl) {
+    let searchBarTags = Array.from(searchContentEl.children)
+        .map(node => node.innerHTML && node.innerHTML.trim())
+        .filter(tag => !!tag);
+
+    if (searchBarTags.includes(tagValue)) {
+        searchBarTags = searchBarTags.filter(tag => tag !== tagValue);
+    } else {
+        searchBarTags = [...searchBarTags, tagValue];
+    }
+
+    return searchBarTags;
+}
+
+function setJobsListings(filterTags) {
+    const jobsListingsHTML = jobsListings.reduce((acc, currentListing) => {
+        return acc + getJobListingHTML(currentListing, filterTags);
+    }, '');
+    
+    document.getElementById('jobs').innerHTML = jobsListingsHTML;
+}
+
 
 

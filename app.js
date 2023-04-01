@@ -152,4 +152,9 @@ const jobsListings = [
     "tools": ["React", "Sass"]
   }
 ];
+function getTagHTML(tag, tagClasses) {
+    return `<span class="${tagClasses}">
+                ${tag}
+            </span>`;
+}
 

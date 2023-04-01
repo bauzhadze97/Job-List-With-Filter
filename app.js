@@ -157,4 +157,28 @@ function getTagHTML(tag, tagClasses) {
                 ${tag}
             </span>`;
 }
+function getJobListingHTML(jobData, filterTags = []) {
+    const JOB_TAGS_PLACEHOLDER = '###JOB_TAGS###';
+    let jobListingHTML = `
+        <div class="jobs__item">
+            <div class="jobs__column jobs__column--left">
+                <img src="${jobData.logo}" alt="${jobData.company}" class="jobs__img" />
+                <div class="jobs__info">
+                    <span class="jobs__company">${jobData.company}</span>
+                    <span class="jobs__title">${jobData.position}</span>
+                    
+                    <ul class="jobs__details">
+                        <li class="jobs__details-item">${jobData.postedAt}</li>
+                        <li class="jobs__details-item">${jobData.contract}</li>
+                        <li class="jobs__details-item">${jobData.location}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="jobs__column jobs__column--right">
+                ${JOB_TAGS_PLACEHOLDER}
+            </div>
+        </div>
+    `;
+
+
 

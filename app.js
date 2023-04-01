@@ -236,5 +236,53 @@ function setJobsListings(filterTags) {
     document.getElementById('jobs').innerHTML = jobsListingsHTML;
 }
 
+function displaySearchWrapper(display = false) {
+    const searchWrapper = document.getElementById('search');
+    
+    if (display) {
+        searchWrapper.classList.remove(SEARCH_HIDDEN_CLASS);
 
+        return;
+    }
+
+    searchWrapper.classList.add(SEARCH_HIDDEN_CLASS);
+}
+
+function setSearchbarContent(searchContentEl, tags) {
+    searchContentEl.innerHTML = tags.reduce((acc, currentTag) => {
+        return acc + getTagHTML(currentTag, CLOSE_TAG_CLASS);
+    }, '');
+}
+
+function resetState(searchContentEl) {
+    searchContentEl.innerHTML = '';
+
+    setJobsListings();
+    displaySearchWrapper(false);
+    toggleClass(targetEl, TAG_ACTIVE_CLASS);
+}
+
+window.addEventListener('click', (event) => {
+    const targetEl = event.target;
+    const targetText = targetEl.innerHTML.trim();
+    const searchContentEl = document.getElementById('search-content');
+    const searchBarTags = getSearchBarTags(targetText, searchContentEl);
+
+    if (targetEl.id === 'clear' || !searchBarTags.length) {
+        resetState(searchContentEl);
+
+        return;
+    }
+
+    if (![TAG_CLASS, CLOSE_TAG_CLASS].some(c => targetEl.classList.contains(c))) {
+        return;
+    }
+
+    setSearchbarContent(searchContentEl, searchBarTags);
+    toggleClass(targetEl, TAG_ACTIVE_CLASS);
+    displaySearchWrapper(searchBarTags.length > 0);
+    setJobsListings(searchBarTags);
+});
+
+setJobsListings();
 
